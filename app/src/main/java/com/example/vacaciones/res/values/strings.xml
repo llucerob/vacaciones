@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Vacaciones</string>
+    <string name="nombre">Nombre</string>
+    <string name="url_imagen">URL Imagen</string>
+    <string name="latitud">Latitud</string>
+    <string name="longitud">Longitud</string>
+    <string name="orden">Orden</string>
+    <string name="costo_alojamiento">Costo Alojamiento (CLP)</string>
+    <string name="costo_transporte">Costo Transporte (CLP)</string>
+    <string name="comentarios">Comentarios</string>
+    <string name="tomar_foto">Tomar Foto</string>
+    <string name="guardar">Guardar</string>
+    <string name="editar">Editar</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="volver">Volver</string>
+    <string name="ver_ubicacion">Ver ubicación en mapa</string>
+    <string name="ver_detalle">Ver detalle</string>
+    <string name="agregar_lugar">Agregar Lugar</string>
+</resources>

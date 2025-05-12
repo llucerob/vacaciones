@@ -16,7 +16,7 @@ import org.osmdroid.views.overlay.Marker
 @SuppressLint("MissingPermission")
 @Composable
 fun PantallaMapa(viewModel: VacacionesViewModel, navController: NavController) {
-    val estado = viewModel.lugarVisita.collectAsState()
+    val lugar = viewModel.lugarSeleccionado.collectAsState().value
     val context = LocalContext.current
 
     AndroidView(factory = {
@@ -29,15 +29,15 @@ fun PantallaMapa(viewModel: VacacionesViewModel, navController: NavController) {
             setMultiTouchControls(true)
             controller.setZoom(16.0)
 
-            estado.value.latitud?.let { lat ->
-                estado.value.longitud?.let { lon ->
+            lugar?.latitud?.let { lat ->
+                lugar?.longitud?.let { lon ->
                     val geoPoint = GeoPoint(lat, lon)
                     controller.setCenter(geoPoint)
 
                     val marker = Marker(this)
                     marker.position = geoPoint
                     marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                    marker.title = estado.value.nombre
+                    marker.title = lugar.nombre
                     overlays.add(marker)
                 }
             }

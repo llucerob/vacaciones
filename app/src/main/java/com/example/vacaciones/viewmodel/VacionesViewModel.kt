@@ -1,37 +1,45 @@
 package com.example.vacaciones.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.viewModelScope
+import com.example.vacaciones.model.Lugar
+import com.example.vacaciones.repository.LugarRepository
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-data class LugarVisita(
-    val nombre: String = "",
-    val fotos: List<Uri> = emptyList(),
-    val latitud: Double? = null,
-    val longitud: Double? = null
-)
+class VacacionesViewModel(private val repository: LugarRepository) : ViewModel() {
 
-class VacacionesViewModel : ViewModel() {
+    val lugares: StateFlow<List<Lugar>> = repository.lugares
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _lugarVisita = MutableStateFlow(LugarVisita())
-    val lugarVisita: StateFlow<LugarVisita> = _lugarVisita
+    private val _lugarSeleccionado = MutableStateFlow<Lugar?>(null)
+    val lugarSeleccionado: StateFlow<Lugar?> = _lugarSeleccionado.asStateFlow()
 
-    fun actualizarNombre(nombre: String) {
-        _lugarVisita.value = _lugarVisita.value.copy(nombre = nombre)
+    fun seleccionarLugar(id: Int) {
+        viewModelScope.launch {
+            _lugarSeleccionado.value = repository.obtenerPorId(id)
+        }
     }
 
-    fun agregarFoto(uri: Uri) {
-        _lugarVisita.value = _lugarVisita.value.copy(
-            fotos = _lugarVisita.value.fotos + uri
-        )
+    fun insertar(lugar: Lugar) {
+        viewModelScope.launch {
+            repository.insertar(lugar)
+        }
     }
 
-    fun actualizarUbicacion(lat: Double, lon: Double) {
-        _lugarVisita.value = _lugarVisita.value.copy(
-            latitud = lat,
-            longitud = lon
-        )
+    fun actualizar(lugar: Lugar) {
+        viewModelScope.launch {
+            repository.actualizar(lugar)
+        }
+    }
+
+    fun eliminar(lugar: Lugar) {
+        viewModelScope.launch {
+            repository.eliminar(lugar)
+        }
+    }
+
+    fun limpiarSeleccion() {
+        _lugarSeleccionado.value = null
     }
 }
-

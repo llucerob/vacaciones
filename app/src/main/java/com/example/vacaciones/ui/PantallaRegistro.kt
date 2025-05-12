@@ -25,8 +25,8 @@ fun PantallaRegistro(
     onAbrirMapa: () -> Unit,
     onVerFotoCompleta: (Uri) -> Unit
 ) {
-    val estado by viewModel.lugarVisita.collectAsState()
-    var nombreLugar by remember { mutableStateOf(estado.nombre) }
+    val lugar = viewModel.lugarSeleccionado.collectAsState().value
+    var nombreLugar by remember { mutableStateOf(lugar?.nombre ?: "") }
 
     Column(
         modifier = Modifier
@@ -44,7 +44,8 @@ fun PantallaRegistro(
             value = nombreLugar,
             onValueChange = {
                 nombreLugar = it
-                viewModel.actualizarNombre(it)
+                // Si deseas, puedes actualizar el nombre aquí en el ViewModel
+                // viewModel.actualizarNombre(it)
             },
             label = { Text("Nombre del lugar") },
             modifier = Modifier.fillMaxWidth()
@@ -57,19 +58,20 @@ fun PantallaRegistro(
             Text("Tomar Foto")
         }
 
-        if (estado.fotos.isNotEmpty()) {
-            Text("Fotos capturadas:")
+        lugar?.uriFoto?.let { uriStr ->
+            val uri = Uri.parse(uriStr)
+            Text("Foto del lugar:")
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(estado.fotos) { uri ->
+                items(listOf(uri)) {
                     Image(
-                        painter = rememberAsyncImagePainter(uri),
+                        painter = rememberAsyncImagePainter(it),
                         contentDescription = null,
                         modifier = Modifier
                             .size(80.dp)
                             .clip(MaterialTheme.shapes.medium)
-                            .clickable { onVerFotoCompleta(uri) }
+                            .clickable { onVerFotoCompleta(it) }
                     )
                 }
             }
